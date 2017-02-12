@@ -19,13 +19,23 @@
         </div>
     </nav>
     <div class="container">
-
-
         <div class="row">
             <div class="col-md-12">
+                <p class="game-title">Feed the snake!</p>
+            </div>
+        </div>
+    </div>
+    <div class="container game-wrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="gameWrapper" class="wrapper">
+                    <p class="gameOverMsg">Oooops! <br />You lost the game!</p>
+                    <button type="button" class="btn btn-default btn-lg" id="btnRestartGame">Try again?</button>
+                </div>
                 <div id="canvasWrapper">
                     <div id="canvasContainer"></div>
                 </div>
+
             </div>
         </div>
 
@@ -108,8 +118,12 @@
 
             for (var i = 0; i < snakeSize; i++) {
 
-                if (snakeTail[i].x == snakeHead.x && snakeTail[i].y == snakeHead.y)
+                if (snakeTail[i].x == snakeHead.x && snakeTail[i].y == snakeHead.y) {
                     endOfGame = true;
+                    var gameWrapper = document.getElementById("gameWrapper");
+                    gameWrapper.className += " show";
+
+                }
 
                 ctx.fillStyle = "#3f444c";
                 ctx.fillRect(snakeTail[i].x, snakeTail[i].y, size - 1, size - 1);
@@ -241,6 +255,34 @@
             draw();
 
         drawFood();
+
+        var btnRestartGame = document.getElementById('btnRestartGame');
+        btnRestartGame.onclick = function () {
+            var gameWrapper = document.getElementById("gameWrapper");
+            gameWrapper.className = "wrapper";
+
+            direction = 'undefined';
+            timer = 'undefined';
+            var endOfGame = false;
+
+            food = getRandomPosition();
+            snakeHead = getRandomPosition();
+            snakeTail = [];
+            snakeSize = 0;
+            seconds = 0;
+            minutes = 0;
+
+            document.getElementById("userScore").innerHTML = 0;
+
+            draw();
+        };
+        
+        var pos = getRandomPosition();
+        while (!positionIsAvailable(pos)) {
+            pos = getRandomPosition();
+        }
+
+
 
     </script>
 </body>

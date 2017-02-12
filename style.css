@@ -2,6 +2,16 @@
     max-width: 835px;
 }
 
+.game-wrapper {
+    margin-top: 18px;
+}
+
+.game-title {
+    font-size: 40px;
+    font-family: 'Architects Daughter', cursive;
+    margin-bottom:0;
+}
+
 .scoring-wrapper {
     font-family: 'Architects Daughter', cursive;
     font-size: 25px;
@@ -18,4 +28,28 @@
 #userScore {
     font-weight: bold;
     font-size: 26px;
+}
+
+.wrapper {
+    display: none;
+}
+
+    .wrapper.show {
+        position: absolute;
+        background-color: rgba(227, 230, 234, 0.6);
+        width: 802px;
+        top: 0;
+        left: 15px;
+        z-index: 2;
+        height: 402px;
+        margin: 0 auto;
+        text-align: center;
+        padding-top: 120px;
+        display: block;
+    }
+
+.gameOverMsg {
+    font-size: 30px;
+    font-family: 'Architects Daughter', cursive;
+    font-weight: bold;
 }
