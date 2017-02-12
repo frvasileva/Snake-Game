@@ -1,146 +1,219 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+    <title>Snake Game</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
+    <nav class="navbar navbar-inverse">
+        <div class="container" style="max-width: 800px;">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Snake</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="https://github.com/frvasileva">Github</a></li>
+                <li><a href="https://www.linkedin.com/in/fankavasileva?">About me</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" style="max-width: 800px;">
 
-<div id="canvasContainer"></div>
 
-<div class="scoring-wrapper">
-	<span id="userScore"></span>
-</div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="canvasWrapper">
+                    <div id="canvasContainer"></div>
+                </div>
 
-<script>
-			var ctx;
-			var size = 20;
-			var canvasWidth = size * 40;
-			var canvasHeight = size * 20;
-			var x = size;
-			var y = size;
-			var setTimeoutInterval = 500;
-			var direction;	
+                <!--<button type="button" class="btn btn-warning">Pause</button>-->
 
-			var food = [2, 5];
-			var snakeHead = [];
-			var snakeTale = [];			
+            </div>
+        </div>
 
-			function createCanvas(){
-				var canvas = document.createElement('canvas');
-				canvas.id = "myCanvas";
-				canvas.width = canvasWidth;
-				canvas.height = canvasHeight;
-				canvas.style.border = "1px solid #c1c1c1";
-			
-				var body = document.getElementsByTagName("body")[0];
-				body.appendChild(canvas);
-				
-				ctx = canvas.getContext("2d");
-			}
-			
-			function draw(){
-				ctx.clearRect(0, 0, canvasWidth, canvasHeight); // clear canvas
-				changeDirection();
-				resetPosition();
-				
-				ctx.fillStyle="#872b4b";
-				ctx.fillRect(x, y, size, size);
-				snakeHead = [x, y];	
-				console.log(snakeHead);	
-				generateFood();
+        <div class="row">
+            <div class="col-md-6">
+                <div class="well">
+                    <div class="scoring-wrapper">
+                        Score:
+                        <span id="userScore">0</span>
+                    </div>
+                </div>
+            </div>
 
-				setTimeout(draw, setTimeoutInterval);
-			}
-			
-			function changeDirection(){
-				switch(direction){
-					case 0:
-						y = y - size;
-						break;
-					case 1:
-						x = x + size;
-						break;
-					case 2:
-						y = y + size;
-						break;
-					case 3:
-					    x = x - size;
-					    break;
-				}				
-			}
-			
-			function resetPosition() {
-				if(x > canvasWidth - size) {
-					x = 0;
-				}
-				
-				if(x < 0) {
-					x = canvasWidth - size;
-				}
-				
-				if(y > canvasHeight - size) {
-					y = 0;
-				}
-				
-				if(y < 0) {
-					y = canvasHeight - size;
-				}
-			}
-						
-			function upArrowPressed() {
-				direction = 0;
-			}
-			
-			function rightArrowPressed() {
-				direction = 1;
-			}
-			
-			function downArrowPressed() {
-				direction = 2;
-			}
-			
-			function leftArrowPressed() {
-				direction = 3;
-			}
+            <div class="col-md-6">
+                <div class="well">
+                    <div class="scoring-wrapper">
+                        <span id="userScore">Score: 300</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-			function generateFood(){
-				ctx.fillStyle="#2b4e87";
-				ctx.fillRect(food[0], food[1], size, size);
-			}
 
-			document.onkeydown = function(evt) {
-			
-				evt = evt || window.event;
+    <script>
+        var ctx;
+        var size = 20;
+        var columns = 40;
+        var rows = 20;
+        var canvasWidth = size * columns;
+        var canvasHeight = size * rows;
 
-				switch (evt.keyCode) {
-					case 37:
-						leftArrowPressed();
-						break;
-					case 38:
-						upArrowPressed();
-						break;	
-					case 39:
-						rightArrowPressed();
-						break;
-					case 40:
-						downArrowPressed();
-						break;
-					default:
-				}
+        var setTimeoutInterval = 200;
+        var direction;
 
-			//var snakeHead = [];
-			//var snakeTale = [];			
-				if(snakeHead[0] == food[0] && snakeHead[1] == food[1]){
-					console.log("hit!")
-				}
-			};
-			
-			createCanvas();
-			
-			draw();
+        var food = getRandomPosition();
+        var snakeHead = getRandomPosition();
+        var snakeTail = [];
+        var snakeSize = 0;
 
-			generateFood();
-		
-	</script>
+        function createCanvas() {
+            var canvas = document.createElement('canvas');
+            canvas.id = "myCanvas";
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            canvas.style.background = "#b2c649";
+            canvas.style.border = "1px solid #c1c1c1";
+
+            var body = document.getElementById("canvasWrapper");
+            body.appendChild(canvas);
+
+            ctx = canvas.getContext("2d");
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight); // clear canvas
+
+            snakeTail.unshift({ x: snakeHead.x, y: snakeHead.y });
+
+            changeDirection();
+            resetPosition();
+
+            ctx.fillStyle = "#3c3d38";
+            ctx.fillRect(snakeHead.x, snakeHead.y, size, size);
+
+            if (food.x == snakeHead.x && food.y == snakeHead.y) {
+                food = getRandomPosition();
+                snakeSize++;
+
+                document.getElementById("userScore").innerHTML = snakeSize * 10;
+
+                if (snakeSize > 25) {
+                    setTimeoutInterval = 180;
+                }
+            }
+
+            for (var i = 0; i < snakeSize; i++) {
+
+                if (snakeTail[i].x == snakeHead.x && snakeTail[i].y == snakeHead.y)
+                    snakeSize = 0;
+
+                ctx.fillRect(snakeTail[i].x, snakeTail[i].y, size, size);
+            }
+
+            snakeTail = snakeTail.slice(0, snakeSize);
+
+            drawFood();
+
+            setTimeout(draw, setTimeoutInterval);
+        }
+
+        function changeDirection() {
+            switch (direction) {
+                case 0:
+                    snakeHead.y = snakeHead.y - size;
+                    break;
+                case 1:
+                    snakeHead.x = snakeHead.x + size;
+                    break;
+                case 2:
+                    snakeHead.y = snakeHead.y + size;
+                    break;
+                case 3:
+                    snakeHead.x = snakeHead.x - size;
+                    break;
+            }
+        }
+
+        function resetPosition() {
+            if (snakeHead.x > canvasWidth - size) {
+                snakeHead.x = 0;
+            }
+
+            if (snakeHead.x < 0) {
+                snakeHead.x = canvasWidth - size;
+            }
+
+            if (snakeHead.y > canvasHeight - size) {
+                snakeHead.y = 0;
+            }
+
+            if (snakeHead.y < 0) {
+                snakeHead.y = canvasHeight - size;
+            }
+        }
+
+        function upArrowPressed() {
+
+            if (direction != 2)
+                direction = 0;
+        }
+
+        function rightArrowPressed() {
+            if (direction != 3)
+                direction = 1;
+        }
+
+        function downArrowPressed() {
+            if (direction != 0)
+                direction = 2;
+        }
+
+        function leftArrowPressed() {
+            if (direction != 1)
+                direction = 3;
+        }
+
+        function drawFood() {
+            ctx.fillStyle = "#efefef";
+            ctx.fillRect(food.x, food.y, size, size);
+        }
+
+        function getRandomPosition() {
+            var randomX = Math.round(Math.random() * (columns - 1)) * size;
+            var randomY = Math.round(Math.random() * (rows - 1)) * size;
+
+            return { x: randomX, y: randomY };
+        }
+
+
+        document.onkeydown = function (evt) {
+
+            evt = evt || window.event;
+
+            switch (evt.keyCode) {
+                case 37:
+                    leftArrowPressed();
+                    break;
+                case 38:
+                    upArrowPressed();
+                    break;
+                case 39:
+                    rightArrowPressed();
+                    break;
+                case 40:
+                    downArrowPressed();
+                    break;
+                default:
+            }
+        };
+
+        createCanvas();
+
+        draw();
+
+        drawFood();
+
+    </script>
 </body>
 </html>
