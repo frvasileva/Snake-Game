@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+<div id="canvasContainer"></div>
+
+<div class="scoring-wrapper">
+	<span id="userScore"></span>
+</div>
+
+<script>
+			var ctx;
+			var size = 20;
+			var canvasWidth = size * 40;
+			var canvasHeight = size * 20;
+			var x = size;
+			var y = size;
+			var setTimeoutInterval = 500;
+			var direction;	
+
+			var food = [2, 5];
+			var snakeHead = [];
+			var snakeTale = [];			
+
+			function createCanvas(){
+				var canvas = document.createElement('canvas');
+				canvas.id = "myCanvas";
+				canvas.width = canvasWidth;
+				canvas.height = canvasHeight;
+				canvas.style.border = "1px solid #c1c1c1";
+			
+				var body = document.getElementsByTagName("body")[0];
+				body.appendChild(canvas);
+				
+				ctx = canvas.getContext("2d");
+			}
+			
+			function draw(){
+				ctx.clearRect(0, 0, canvasWidth, canvasHeight); // clear canvas
+				changeDirection();
+				resetPosition();
+				
+				ctx.fillStyle="#872b4b";
+				ctx.fillRect(x, y, size, size);
+				snakeHead = [x, y];	
+				console.log(snakeHead);	
+				generateFood();
+
+				setTimeout(draw, setTimeoutInterval);
+			}
+			
+			function changeDirection(){
+				switch(direction){
+					case 0:
+						y = y - size;
+						break;
+					case 1:
+						x = x + size;
+						break;
+					case 2:
+						y = y + size;
+						break;
+					case 3:
+					    x = x - size;
+					    break;
+				}				
+			}
+			
+			function resetPosition() {
+				if(x > canvasWidth - size) {
+					x = 0;
+				}
+				
+				if(x < 0) {
+					x = canvasWidth - size;
+				}
+				
+				if(y > canvasHeight - size) {
+					y = 0;
+				}
+				
+				if(y < 0) {
+					y = canvasHeight - size;
+				}
+			}
+						
+			function upArrowPressed() {
+				direction = 0;
+			}
+			
+			function rightArrowPressed() {
+				direction = 1;
+			}
+			
+			function downArrowPressed() {
+				direction = 2;
+			}
+			
+			function leftArrowPressed() {
+				direction = 3;
+			}
+
+			function generateFood(){
+				ctx.fillStyle="#2b4e87";
+				ctx.fillRect(food[0], food[1], size, size);
+			}
+
+			document.onkeydown = function(evt) {
+			
+				evt = evt || window.event;
+
+				switch (evt.keyCode) {
+					case 37:
+						leftArrowPressed();
+						break;
+					case 38:
+						upArrowPressed();
+						break;	
+					case 39:
+						rightArrowPressed();
+						break;
+					case 40:
+						downArrowPressed();
+						break;
+					default:
+				}
+
+			//var snakeHead = [];
+			//var snakeTale = [];			
+				if(snakeHead[0] == food[0] && snakeHead[1] == food[1]){
+					console.log("hit!")
+				}
+			};
+			
+			createCanvas();
+			
+			draw();
+
+			generateFood();
+		
+	</script>
+</body>
+</html>
