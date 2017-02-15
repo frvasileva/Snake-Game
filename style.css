@@ -19,6 +19,7 @@
     display: block;
     padding: 20px;
     border-radius: 3px;
+    box-shadow: 2px 1px 1px 0px #dad8d8;
 }
 
 .scoring-row {
